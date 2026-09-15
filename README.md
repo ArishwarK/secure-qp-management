@@ -1,10 +1,3 @@
-Here is the complete, submission-ready **`README.md`** containing all required sections formatted to score full marks in your evaluation.
-
-Replace the contents of your **`README.md`** file with the following:
-
----
-
-```markdown
 # Secure Question Paper Management System (SQPMS)
 ### Preventing Leakage and Ensuring Exam Integrity
 
@@ -47,7 +40,6 @@ Built in direct accordance with standard examination security frameworks, the sy
 ```bash
 git clone https://github.com/<YOUR-USERNAME>/secure-qp-management.git
 cd secure-qp-management
-```
 
 ### Step 2: Set Up Virtual Environment (Recommended)
 ```bash
