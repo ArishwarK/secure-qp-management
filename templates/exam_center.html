@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-header bg-primary text-white d-flex justify-content-between">
+    <h5 class="mb-0">Exam Center System: {{ center_id }}</h5>
+    <span>Active Role: <strong>{{ session.get('role') }}</strong></span>
+  </div>
+  <div class="card-body">
+    <p class="text-muted">
+      Decryption requires <strong>Dual Control</strong> (Center Superintendent + External Observer) 
+      and <strong>Time-Lock validation</strong> (Exam Start Time reached).
+    </p>
+    <table class="table table-hover table-bordered">
+      <thead class="table-light">
+        <tr>
+          <th>Paper ID</th>
+          <th>Subject</th>
+          <th>Exam Start / End</th>
+          <th>Dual Authority Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in papers %}
+        {% set state = auth_states.get(p.id) %}
+        <tr>
+          <td>#{{ p.id }}</td>
+          <td><strong>{{ p.course_code }}</strong> - {{ p.title }}</td>
+          <td><small>{{ p.exam_start_time }} to {{ p.exam_end_time }}</small></td>
+          <td>
+            <span class="badge {{ 'bg-success' if state and state.superintendent_approved else 'bg-secondary' }}">Superintendent</span>
+            <span class="badge {{ 'bg-success' if state and state.observer_approved else 'bg-secondary' }}">Observer</span>
+          </td>
+          <td>
+            <div class="btn-group">
+              <form method="POST" action="/exam-center/authorize/{{ p.id }}" class="me-2">
+                <button class="btn btn-sm btn-outline-primary" {% if (session.get('role') == 'CENTER_HEAD' and state and state.superintendent_approved) or (session.get('role') == 'OBSERVER' and state and state.observer_approved) %}disabled{% endif %}>
+                  ✍️ Sign Approval
+                </button>
+              </form>
+              
+              <a href="/exam-center/decrypt/{{ p.id }}" class="btn btn-sm btn-danger {% if not state or not state.unlocked %}disabled{% endif %}">
+                🔓 Decrypt (Time-Locked)
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

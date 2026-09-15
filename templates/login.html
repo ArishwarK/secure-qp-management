@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm border-0">
+      <div class="card-header bg-primary text-white text-center py-3">
+        <h5 class="mb-0">Secure Exam Portal - Multi-Factor Authentication</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST">
+          <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="username" class="form-control" placeholder="e.g. prof_smith" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" placeholder="pass123" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">MFA TOTP Token (6 Digits)</label>
+            <input type="text" name="mfa_token" class="form-control" placeholder="Use '123456' for test" required>
+            <div class="form-text">For testing, use default demo code: <code>123456</code>.</div>
+          </div>
+          <button type="submit" class="btn btn-primary w-100">Sign In Securely</button>
+        </form>
+        <hr>
+        <div class="small text-muted">
+          <strong>Pre-seeded Credentials:</strong><br>
+          • Faculty: <code>prof_smith</code> / <code>pass123</code><br>
+          • Superintendent: <code>center_head_101</code> / <code>pass123</code><br>
+          • Observer: <code>observer_101</code> / <code>pass123</code><br>
+          • Auditor: <code>auditor_bob</code> / <code>pass123</code>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

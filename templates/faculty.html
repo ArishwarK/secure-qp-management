@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row">
+  <div class="col-md-6">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">1. Authoring: Create Question Paper (AES-256)</h5>
+      </div>
+      <div class="card-body">
+        {% if session.get('role') == 'FACULTY' %}
+        <form method="POST">
+          <div class="mb-2">
+            <label class="form-label">Course Code</label>
+            <input type="text" name="course_code" class="form-control" placeholder="CS601" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label">Paper Title</label>
+            <input type="text" name="title" class="form-control" placeholder="Cryptography & System Security" required>
+          </div>
+          <div class="row">
+            <div class="col mb-2">
+              <label class="form-label">Time-Lock Start</label>
+              <input type="datetime-local" name="exam_start" class="form-control" required>
+            </div>
+            <div class="col mb-2">
+              <label class="form-label">Time-Lock End</label>
+              <input type="datetime-local" name="exam_end" class="form-control" required>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Questions & Scheme</label>
+            <textarea name="content" rows="6" class="form-control" placeholder="Q1. Explain AES-256 GCM mode..." required></textarea>
+          </div>
+          <button type="submit" class="btn btn-success w-100">🔒 Encrypt (AES-256) & Save</button>
+        </form>
+        {% else %}
+        <div class="alert alert-info">Logged in as Reviewer. View-only mode for papers.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">2. Secure Storage Vault (Ciphertext Status)</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Course</th>
+              <th>Time Window</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for p in papers %}
+            <tr>
+              <td>#{{ p.id }}</td>
+              <td><strong>{{ p.course_code }}</strong><br><small>{{ p.title }}</small></td>
+              <td><small>From: {{ p.exam_start_time }}<br>To: {{ p.exam_end_time }}</small></td>
+              <td><span class="badge bg-success">ENCRYPTED (AES-256)</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-muted">No papers created yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
