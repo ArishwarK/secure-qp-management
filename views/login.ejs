@@ -1,0 +1,60 @@
+<%- include('partials/header') %>
+
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm border-0" id="loginCard">
+      <div class="card-header bg-primary text-white text-center py-3">
+        <h5 class="mb-0">Secure Exam Portal - Multi-Factor Authentication</h5>
+      </div>
+      <div class="card-body p-4">
+        <form method="POST" action="/login" id="loginForm">
+          <div class="mb-3">
+            <label class="form-label" for="usernameInput">Username</label>
+            <input type="text" id="usernameInput" name="username" class="form-control" placeholder="e.g. prof_smith" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="passwordInput">Password</label>
+            <input type="password" id="passwordInput" name="password" class="form-control" placeholder="pass123" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="mfaTokenInput">MFA TOTP Token (6 Digits)</label>
+            <input type="text" id="mfaTokenInput" name="mfa_token" class="form-control" value="123456" placeholder="Use '123456' for test" required>
+            <div class="form-text">Default demo MFA code <code>123456</code> is pre-filled for testing.</div>
+          </div>
+          <button type="submit" id="submitLoginBtn" class="btn btn-primary w-100 fw-bold">Sign In Securely</button>
+        </form>
+        <hr>
+        <div class="small text-muted">
+          <strong class="d-block mb-2">Quick Demo Sign-In (Click a role to auto-fill & sign in):</strong>
+          <div class="d-grid gap-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary text-start" onclick="quickLogin('prof_smith', 'pass123')">
+              👨‍🏫 <strong>Faculty</strong> — <code>prof_smith</code> / <code>pass123</code>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary text-start" onclick="quickLogin('dean_review', 'pass123')">
+              📋 <strong>Reviewer</strong> — <code>dean_review</code> / <code>pass123</code>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary text-start" onclick="quickLogin('center_head_101', 'pass123')">
+              🏛️ <strong>Center Superintendent</strong> — <code>center_head_101</code> / <code>pass123</code>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary text-start" onclick="quickLogin('observer_101', 'pass123')">
+              👁️ <strong>External Observer</strong> — <code>observer_101</code> / <code>pass123</code>
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary text-start" onclick="quickLogin('auditor_bob', 'pass123')">
+              🛡️ <strong>Security Auditor</strong> — <code>auditor_bob</code> / <code>pass123</code>
+            </button>
+          </div>
+        </div>
+        <script>
+          function quickLogin(user, pass) {
+            document.getElementById('usernameInput').value = user;
+            document.getElementById('passwordInput').value = pass;
+            document.getElementById('mfaTokenInput').value = '123456';
+            document.getElementById('loginForm').submit();
+          }
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

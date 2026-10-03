@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<div class="card shadow-sm" id="examCenterCard">
+  <div class="card-header bg-primary text-white d-flex justify-content-between">
+    <h5 class="mb-0">Exam Center System: <%= center_id %></h5>
+    <span>Active Role: <strong><%= session.role %></strong></span>
+  </div>
+  <div class="card-body">
+    <p class="text-muted">
+      Decryption requires <strong>Dual Control</strong> (Center Superintendent + External Observer) 
+      and <strong>Time-Lock validation</strong> (Exam Start Time reached).
+    </p>
+    <table class="table table-hover table-bordered" id="centerPapersTable">
+      <thead class="table-light">
+        <tr>
+          <th>Paper ID</th>
+          <th>Subject</th>
+          <th>Exam Start / End</th>
+          <th>Dual Authority Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (papers && papers.length > 0) { %>
+          <% papers.forEach(function(p) { %>
+            <% const state = auth_states[p.id]; %>
+            <% const superApproved = state && state.superintendent_approved; %>
+            <% const obsApproved = state && state.observer_approved; %>
+            <% const isUnlocked = state && state.unlocked; %>
+            <% const alreadySigned = (session.role === 'CENTER_HEAD' && superApproved) || (session.role === 'OBSERVER' && obsApproved); %>
+            <tr>
+              <td>#<%= p.id %></td>
+              <td>
+                <strong><%= p.course_code %></strong> - <%= p.title %>
+                <% if (p.file_name) { %>
+                  <br><span class="badge bg-info text-dark mt-1">📎 <%= p.file_name %></span>
+                <% } %>
+              </td>
+              <td><small><%= p.exam_start_time %> to <%= p.exam_end_time %></small></td>
+              <td>
+                <span class="badge <%= superApproved ? 'bg-success' : 'bg-secondary' %>">Superintendent</span>
+                <span class="badge <%= obsApproved ? 'bg-success' : 'bg-secondary' %>">Observer</span>
+              </td>
+              <td>
+                <div class="btn-group">
+                  <form method="POST" action="/exam-center/authorize/<%= p.id %>" class="me-2" id="authForm_<%= p.id %>">
+                    <button type="submit" class="btn btn-sm btn-outline-primary" id="signBtn_<%= p.id %>" <%= alreadySigned ? 'disabled' : '' %>>
+                      ✍️ Sign Approval
+                    </button>
+                  </form>
+                  
+                  <a href="/exam-center/decrypt/<%= p.id %>" id="decryptBtn_<%= p.id %>" class="btn btn-sm btn-danger <%= !isUnlocked ? 'disabled' : '' %>">
+                    🔓 Decrypt (Time-Locked)
+                  </a>
+                </div>
+              </td>
+            </tr>
+          <% }); %>
+        <% } else { %>
+          <tr><td colspan="5" class="text-center text-muted">No examination papers found.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

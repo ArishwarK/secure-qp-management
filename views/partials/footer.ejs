@@ -1,0 +1,31 @@
+  </div>
+  <% if (typeof authToken !== 'undefined' && authToken) { %>
+  <script>
+    (function() {
+      const token = <%- JSON.stringify(authToken) %>;
+      if (!token) return;
+
+      // Append _t to internal forms (supports both urlencoded and multipart/form-data)
+      document.querySelectorAll('form').forEach(function(form) {
+        const action = form.getAttribute('action') || window.location.pathname;
+        if (action.startsWith('/') && !action.startsWith('/logout') && !action.startsWith('/login')) {
+          const sep = action.includes('?') ? '&' : '?';
+          form.setAttribute('action', action + sep + '_t=' + encodeURIComponent(token));
+        }
+      });
+
+      // Append _t to internal links & iframes
+      document.querySelectorAll('a[href], iframe[src]').forEach(function(el) {
+        const attr = el.tagName === 'IFRAME' ? 'src' : 'href';
+        const val = el.getAttribute(attr);
+        if (val && val.startsWith('/') && !val.startsWith('/logout') && !val.startsWith('/login')) {
+          const sep = val.includes('?') ? '&' : '?';
+          el.setAttribute(attr, val + sep + '_t=' + encodeURIComponent(token));
+        }
+      });
+    })();
+  </script>
+  <% } %>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

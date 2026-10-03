@@ -1,0 +1,110 @@
+<%- include('partials/header') %>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card shadow-sm mb-4" id="authoringCard">
+      <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">1. Authoring & Upload: Question Paper (AES-256)</h5>
+      </div>
+      <div class="card-body">
+        <% if (session.role === 'FACULTY') { %>
+        <form method="POST" action="/faculty" enctype="multipart/form-data" id="createPaperForm">
+          <div class="mb-2">
+            <label class="form-label" for="courseCodeInput">Course Code</label>
+            <input type="text" id="courseCodeInput" name="course_code" class="form-control" placeholder="CS601" required>
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="paperTitleInput">Paper Title</label>
+            <input type="text" id="paperTitleInput" name="title" class="form-control" placeholder="Cryptography & System Security" required>
+          </div>
+          <div class="row">
+            <div class="col mb-2">
+              <label class="form-label" for="examStartInput">Time-Lock Start</label>
+              <input type="datetime-local" id="examStartInput" name="exam_start" class="form-control" required>
+            </div>
+            <div class="col mb-2">
+              <label class="form-label" for="examEndInput">Time-Lock End</label>
+              <input type="datetime-local" id="examEndInput" name="exam_end" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="mb-3 p-3 bg-light border rounded">
+            <label class="form-label fw-bold" for="questionFileInput">📄 Upload Question Paper File (PDF, DOCX, TXT, MD)</label>
+            <input type="file" id="questionFileInput" name="question_file" class="form-control" accept=".pdf,.txt,.md,.doc,.docx,application/pdf,text/plain">
+            <div class="form-text text-muted">
+              Uploaded files are immediately encrypted in-memory with <strong>AES-256-GCM</strong> before storage. Text files auto-populate the editor below.
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="paperContentInput">Questions & Scheme (Text / Instructions)</label>
+            <textarea id="paperContentInput" name="content" rows="5" class="form-control" placeholder="Type questions directly here, or upload a question paper document above..."></textarea>
+          </div>
+          <button type="submit" id="encryptSaveBtn" class="btn btn-success w-100">🔒 Encrypt (AES-256) & Store in Vault</button>
+        </form>
+        <script>
+          document.getElementById('questionFileInput')?.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            const isText = file.type === 'text/plain' || /\.(txt|md|csv)$/i.test(file.name);
+            const textarea = document.getElementById('paperContentInput');
+            if (isText && textarea && !textarea.value.trim()) {
+              const reader = new FileReader();
+              reader.onload = function(evt) {
+                textarea.value = evt.target.result;
+              };
+              reader.readAsText(file);
+            }
+          });
+        </script>
+        <% } else { %>
+        <div class="alert alert-info">Logged in as Reviewer. View-only mode for papers.</div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm" id="vaultCard">
+      <div class="card-header bg-dark text-white">
+        <h5 class="mb-0">2. Secure Storage Vault (Ciphertext Status)</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered align-middle" id="papersTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Course</th>
+              <th>Time Window</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (papers && papers.length > 0) { %>
+              <% papers.forEach(function(p) { %>
+              <tr>
+                <td>#<%= p.id %></td>
+                <td>
+                  <strong><%= p.course_code %></strong><br>
+                  <small><%= p.title %></small>
+                  <% if (p.file_name) { %>
+                    <div class="mt-1">
+                      <span class="badge bg-info text-dark">📎 <%= p.file_name %> (<%= (p.file_size / 1024).toFixed(1) %> KB)</span>
+                    </div>
+                  <% } %>
+                </td>
+                <td><small>From: <%= p.exam_start_time %><br>To: <%= p.exam_end_time %></small></td>
+                <td><span class="badge bg-success">ENCRYPTED (AES-256)</span></td>
+              </tr>
+              <% }); %>
+            <% } else { %>
+              <tr><td colspan="4" class="text-center text-muted">No papers created yet.</td></tr>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

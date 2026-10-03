@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+
+<div class="card shadow border-danger" id="viewPaperCard">
+  <div class="card-header bg-danger text-white d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <h5 class="mb-0">CONFIDENTIAL QUESTION PAPER [DECRYPTED IN MEMORY]</h5>
+    <div class="d-flex gap-2">
+      <% if (paper.file_name) { %>
+        <a href="/exam-center/file/<%= paper.id %>" id="downloadUploadedFileBtn" class="btn btn-warning btn-sm fw-bold">
+          📥 Download Uploaded File (<%= paper.file_name %>)
+        </a>
+      <% } %>
+      <a href="/exam-center/print/<%= paper.id %>" id="printPaperBtn" class="btn btn-light btn-sm fw-bold">
+        🖨️ Controlled Print (Dynamic Watermark PDF)
+      </a>
+    </div>
+  </div>
+  <div class="card-body position-relative" style="user-select: none;">
+    <div class="alert alert-warning">
+      <strong>Anti-Leak Tracking Active:</strong> Decrypted on Center <code><%= center_id %></code>. 
+      Dynamic watermark will be embedded in print generation.
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+      <h4><%= paper.course_code %> - <%= paper.title %></h4>
+      <% if (paper.file_name) { %>
+        <span class="badge bg-primary">📎 Attached Paper: <%= paper.file_name %> (<%= (paper.file_size / 1024).toFixed(1) %> KB)</span>
+      <% } %>
+    </div>
+    <hr>
+
+    <% if (paper.file_name && (paper.file_mime === 'application/pdf' || paper.file_name.toLowerCase().endsWith('.pdf'))) { %>
+      <div class="mb-3">
+        <h6>Embedded Watermarked PDF Preview:</h6>
+        <iframe
+          src="/exam-center/file/<%= paper.id %>?inline=1"
+          class="w-100 border rounded"
+          style="height: 550px;"
+          title="Decrypted Question Paper PDF"
+        ></iframe>
+      </div>
+    <% } %>
+
+    <pre class="p-3 bg-light border rounded" style="font-size: 1.1rem; white-space: pre-wrap;"><%= content %></pre>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

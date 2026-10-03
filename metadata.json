@@ -1,0 +1,6 @@
+{
+  "name": "Secure Question Paper Management System",
+  "description": "Secure Question Paper Management System with AES-256-GCM encryption, MFA, dual-control decryption, time-locks, and forensic watermarked PDF generation.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

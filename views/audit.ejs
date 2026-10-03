@@ -1,0 +1,39 @@
+<%- include('partials/header') %>
+
+<div class="card shadow-sm" id="auditCard">
+  <div class="card-header bg-dark text-white">
+    <h5 class="mb-0">7. Audit & Monitoring System (Immutable Event Logs)</h5>
+  </div>
+  <div class="card-body">
+    <table class="table table-sm table-striped" id="auditLogsTable">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Action Type</th>
+          <th>User</th>
+          <th>Role</th>
+          <th>Event Details</th>
+          <th>Client IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (logs && logs.length > 0) { %>
+          <% logs.forEach(function(log) { %>
+          <tr>
+            <td><small><%= log.timestamp %></small></td>
+            <td><span class="badge bg-secondary"><%= log.action %></span></td>
+            <td><%= log.user %></td>
+            <td><%= log.role %></td>
+            <td><%= log.details %></td>
+            <td><code><%= log.ip_address %></code></td>
+          </tr>
+          <% }); %>
+        <% } else { %>
+          <tr><td colspan="6" class="text-center text-muted">No audit logs recorded yet.</td></tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
