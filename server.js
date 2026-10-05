@@ -550,7 +550,12 @@ app.get('/audit', loginRequired(['AUDITOR']), (req, res) => {
   res.render('audit', { logs });
 });
 
-// Start dev server
-app.listen(PORT, HOST, () => {
-  console.log(`[SQPMS] Server is listening on http://${HOST}:${PORT}`);
-});
+// Start dev server when running directly (skip in Vercel serverless functions)
+if (!process.env.VERCEL) {
+  app.listen(PORT, HOST, () => {
+    console.log(`[SQPMS] Server is listening on http://${HOST}:${PORT}`);
+  });
+}
+
+export default app;
+
